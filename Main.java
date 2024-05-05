@@ -62,7 +62,119 @@ public class Main{
         }
     }
 
+    // Consumer Methods
+    // Make Reservations
+    // Modify Reservations
+    // Cancel Reservations
+    // Order Foods
 
+    static void makeReservation() {
+        System.out.println("Enter your name:");
+        String name = sc.next();
+        System.out.println("Enter your phone number:");
+        String phone = sc.next();
+        System.out.println("Enter the time for your reservation (e.g., 19:00):");
+        String time = sc.next();
+        System.out.println("Enter party size:");
+        int partySize = sc.nextInt();
+    
+        for (Reservation r : reservations) {
+            if (r.getTime().equals(time) && r.getPartySize() == partySize) {
+                System.out.println("Sorry, a reservation for that time and party size already exists.");
+                return;
+            }
+        }
+
+        reservations.add(new Reservation(name, phone, time, partySize));
+        System.out.println("Reservation made successfully!");
+    }
+
+    static void modifyReservation() {
+        System.out.println("Enter your name:");
+        String name = sc.next();
+        System.out.println("Enter the original reservation time (e.g., 19:00):");
+        String origTime = sc.next();
+    
+        Reservation foundReservation = null;
+        for (Reservation r : reservations) {
+            if (r.getName().equals(name) && r.getTime().equals(origTime)) {
+                foundReservation = r;
+                break;
+            }
+        }
+    
+        if (foundReservation == null) {
+            System.out.println("No reservation found for the provided details.");
+            return;
+        }
+    
+        System.out.println("Enter the new time for your reservation:");
+        String newTime = sc.next();
+        System.out.println("Enter new party size:");
+        int newPartySize = sc.nextInt();
+
+        for (Reservation r : reservations) {
+            if (r != foundReservation && r.getTime().equals(newTime) && r.getPartySize() == newPartySize) {
+                System.out.println("Conflict with an existing reservation. Try different time or party size.");
+                return;
+            }
+        }
+    
+        foundReservation.setTime(newTime);
+        foundReservation.setPartySize(newPartySize);
+        System.out.println("Reservation modified successfully!");
+    }
+
+    static void cancelReservation() {
+        System.out.println("Enter your name:");
+        String name = sc.next();
+        System.out.println("Enter the reservation time (e.g., 19:00):");
+        String time = sc.next();
+    
+        // Find and remove the reservation
+        boolean removed = reservations.removeIf(r -> r.getName().equals(name) && r.getTime().equals(time));
+    
+        if (removed) {
+            System.out.println("Reservation canceled successfully!");
+        } else {
+            System.out.println("No reservation found with the given details.");
+        }
+    }
+
+    static void placeOrder() {
+        System.out.println("Enter your name:");
+        String name = sc.next();
+        System.out.println("Enter your reservation time (e.g., 19:00):");
+        String time = sc.next();
+        
+        Reservation currentReservation = null;
+        for (Reservation r : reservations) {
+            if (r.getName().equals(name) && r.getTime().equals(time)) {
+                currentReservation = r;
+                break;
+            }
+        }
+    
+        if (currentReservation == null) {
+            System.out.println("No reservation found for the provided details. Make sure you have a reservation first.");
+            return;
+        }
+    
+        int choice = -1;
+        do {
+            printMenu();
+            System.out.println("Enter the menu item number to add to your order (0 to finish):");
+            choice = sc.nextInt();
+            if (choice > 0 && choice <= menu.size()) {
+                currentReservation.addOrderItem(menu.get(choice - 1));
+                System.out.println("Added to your order: " + menu.get(choice - 1).getItem());
+            } else if (choice != 0) {
+                System.out.println("Invalid item number. Please try again.");
+            }
+        } while (choice != 0);
+    
+        System.out.println("Your order has been placed.");
+    }
 
     public static void main (String[] args){
 
@@ -234,8 +346,52 @@ public class Main{
                     break;
 
             // Customer features
+            // 1. View menu items
+            // 2. Place orders
+            // 3. Make, Modify, and Cancel reservations
                 case 2:
-                    System.out.println("Customer test");
+                    do {
+                        System.out.println("\nCUSTOMER GUI");
+                        System.out.println("=========================");
+                        System.out.println("MENU OPTIONS");
+                        System.out.println("-------------------------");
+                        System.out.println("(1) View Menu");
+                        System.out.println("(2) Place Order");
+                        System.out.println("-------------------------");
+                        System.out.println("RESERVATION OPTIONS");
+                        System.out.println("-------------------------");
+                        System.out.println("(3) Make Reservation");
+                        System.out.println("(4) Modify Reservation");
+                        System.out.println("(5) Cancel Reservation");
+                        System.out.println("(6) Exit");
+                
+                        aChoice = sc.nextInt();
+                
+                        switch (aChoice) {
+                            case 1:
+                                printMenu();
+                                break;
+                            case 2:
+                                placeOrder();
+                                break;
+                            case 3:
+                                makeReservation();
+                                break;
+                            case 4:
+                                modifyReservation();
+                                break;
+                            case 5:
+                                cancelReservation();
+                                break;
+                            case 6:
+                                System.out.println("Exiting customer menu ...");
+                                aquit = 1;
+                                break;
+                            default:
+                                System.out.println("Not a valid option, try again!");
+                                break;
+                        }
+                    } while (aquit == 0);
                     break;
             // Exit
                 case 3:
