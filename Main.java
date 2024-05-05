@@ -131,7 +131,6 @@ public class Main{
         System.out.println("Enter the reservation time (e.g., 19:00):");
         String time = sc.next();
     
-        // Find and remove the reservation
         boolean removed = reservations.removeIf(r -> r.getName().equals(name) && r.getTime().equals(time));
     
         if (removed) {
