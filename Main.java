@@ -54,12 +54,53 @@ public class Main{
     // Search reservations by name / number
     // Search menu
     
+
     static void printReservations(){
+        System.out.println("\nRESERVATIONS GUI");
+        System.out.println("Name  |  Phone    | Time  | Party Size");
         for(int i = 0;i<reservations.size(); i++){
-            System.out.println("\nRESERVATIONS GUI");
-            System.out.println("Name  |  Phone    | Time  | Party Size");
             System.out.println(reservations.get(i).getName() + " | " + reservations.get(i).getPhone() + " | " + reservations.get(i).getTime() + " | " + reservations.get(i).getPartySize());
         }
+    }
+
+    static void removeItem() {
+        System.out.println("Enter item name:");
+        String itemname = sc.nextLine();
+    
+        boolean removed = menu.removeIf(m -> m.getItem().equals(itemname.toLowerCase()));
+    
+        if (removed) {
+            System.out.println("Menu item removed successfully!");
+        } else {
+            System.out.println("No menu item found with the given details.");
+        }
+    }
+
+    static void updateMenu() {
+        System.out.println("Enter item name: ");
+        String name = sc.nextLine();
+    
+        Menu foundMenuItem = null;
+        for (Menu r : menu) {
+            if (r.getItem().equals(name)) {
+                foundMenuItem = r;
+                break;
+            }
+        }
+    
+        if (foundMenuItem == null) {
+            System.out.println("No menu item found");
+            return;
+        }
+    
+        System.out.println("Enter new menu item name:");
+        String newName = sc.nextLine();
+        System.out.println("Enter new price:");
+        double newPrice = sc.nextDouble();
+    
+        foundMenuItem.setItem(newName);
+        foundMenuItem.setPrice(newPrice);
+        System.out.println("Menu item modified sucessfully!");
     }
 
     // Consumer Methods
@@ -140,6 +181,8 @@ public class Main{
         }
     }
 
+    
+
     static void placeOrder() {
         System.out.println("Enter your name:");
         String name = sc.next();
@@ -177,6 +220,8 @@ public class Main{
 
     public static void main (String[] args){
 
+        Scanner scanner = new Scanner(System.in);
+
         // BASE MENU
         Menu fries = new Menu("fries", 5.00, "appetizer");
         Menu ct = new Menu("chicken tenders", 6.00, "appetizer");
@@ -201,10 +246,10 @@ public class Main{
         int quit = 0;
         int choice;
         int aquit = 0;
-        int aChoice;
         String newitem;
         double newprice;
         int addMenuChoice;
+        int aChoice;
         
         // LOOP PROGRAM
         do{
@@ -216,6 +261,7 @@ public class Main{
             System.out.println("(2) Customer");
             System.out.println("(3) Exit");
             choice = sc.nextInt();
+            int adminChoice;
 
             // Admin features
             // 1. View and edit menu items
@@ -242,9 +288,9 @@ public class Main{
                         System.out.println("(8) Update Reservation");
                         System.out.println("(9) Exit");
 
-                        aChoice = sc.nextInt();
+                        adminChoice = sc.nextInt();
                     
-                        switch(aChoice){
+                        switch(adminChoice){
                             case 1:
                                 printMenu();
                                 break;
@@ -296,12 +342,12 @@ public class Main{
                                 System.out.println("Item successfully added!");
                                 break;
 
-                            case 3:
-                                System.out.println("woop2");
+                            case 3: //delete menu item
+                                removeItem();
                                 break;
 
-                            case 4:
-                                System.out.println("woop2");
+                            case 4: //update menu item
+                                updateMenu();
                                 break;
 
                             case 5:
@@ -323,12 +369,12 @@ public class Main{
                                 reservations.add(newRes);
                                 break;
 
-                            case 7:
-                                System.out.println("woop2");
+                            case 7: //delete reservation
+                                cancelReservation();
                                 break;
 
-                            case 8:
-                                System.out.println("woop2");
+                            case 8: //update reservation
+                                modifyReservation();
                                 break;
 
                             case 9:
